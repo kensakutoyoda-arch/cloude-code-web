@@ -1,0 +1,70 @@
+/* NEO GRADIA - ネオレトロ シューティング スタイル */
+
+:root {
+  --neon-cyan: #38f6ff;
+  --neon-mag: #ff3cc7;
+  --bg-deep: #05060f;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: radial-gradient(circle at 50% 30%, #0a1030 0%, var(--bg-deep) 70%, #000 100%);
+  color: #cfe9ff;
+  font-family: "Courier New", ui-monospace, monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  overflow: hidden;
+}
+
+#stage-wrap {
+  position: relative;
+  width: min(92vw, 800px);
+  aspect-ratio: 4 / 3;
+  border: 2px solid rgba(56, 246, 255, 0.5);
+  border-radius: 6px;
+  box-shadow:
+    0 0 18px rgba(56, 246, 255, 0.35),
+    inset 0 0 40px rgba(0, 20, 60, 0.6);
+  overflow: hidden;
+  background: #01030a;
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* 走査線＋ビネットの CRT 風オーバーレイ */
+#crt-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.18) 3px,
+      rgba(0, 0, 0, 0.18) 4px
+    ),
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.45) 100%);
+  mix-blend-mode: multiply;
+}
+
+#hint {
+  margin: 0;
+  font-size: clamp(10px, 1.4vw, 13px);
+  letter-spacing: 0.04em;
+  color: #6fb8d6;
+  text-align: center;
+  text-shadow: 0 0 6px rgba(56, 246, 255, 0.25);
+}

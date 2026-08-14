@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEO GRADIA - ネオレトロ シューティング</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="stage-wrap">
+    <canvas id="game" width="800" height="600"></canvas>
+    <div id="crt-overlay"></div>
+  </div>
+
+  <p id="hint">
+    移動: 方向キー / WASD ・ ショット: Z / Space ・ パワーアップ: X / Enter ・ ポーズ: P ・ スタート: Enter
+  </p>
+
+  <!-- 読み込み順が重要（依存の浅い順） -->
+  <script src="js/core.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/starfield.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/weapons.js"></script>
+  <script src="js/options.js"></script>
+  <script src="js/powerup.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/boss.js"></script>
+  <script src="js/stage.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

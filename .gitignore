@@ -1,0 +1,19 @@
+# 依存パッケージ
+node_modules/
+
+# ログ・一時ファイル
+*.log
+tmp/
+.cache/
+
+# テスト/デバッグ用の生成物
+smoketest.js
+bosstest.js
+shot_*.png
+*.local
+
+# OS / エディタ
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
