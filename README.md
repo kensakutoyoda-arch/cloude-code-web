@@ -8,12 +8,30 @@
 
 以下のいずれかで起動できます。
 
-- **かんたん**: `index.html` をブラウザで直接開く（ダブルクリックでOK）。
+- **オンライン（GitHub Pages）**: 公開URLをブラウザで開くだけ（下記「公開する」参照）。
+  → https://kensakutoyoda-arch.github.io/cloude-code-web/
+- **かんたん（ローカル）**: `index.html` をブラウザで直接開く（ダブルクリックでOK）。
 - **ローカルサーバ経由**（推奨・より安定）:
   ```bash
   python3 -m http.server
   # ブラウザで http://localhost:8000 を開く
   ```
+
+## GitHub Pages で公開する
+
+このゲームは静的サイト（サーバー不要）なので、GitHub Pages で無料公開できます。
+
+1. **リポジトリを Public にする**
+   Settings → General → 最下部の Danger Zone →「Change repository visibility」→ Public。
+   （無料アカウントで Pages を使うには Public が必要です）
+2. **Pages を有効化する**
+   Settings → Pages → Build and deployment →
+   Source =「Deploy from a branch」、Branch = `main` / フォルダ `/ (root)` → **Save**。
+3. 数十秒〜数分後、次のURLで公開されます。
+   → `https://kensakutoyoda-arch.github.io/cloude-code-web/`
+
+`main` に push するたびに、Pages は自動で再デプロイされます。
+（`.nojekyll` を置いているため、ファイルはそのまま配信されます）
 
 ## 操作方法
 
