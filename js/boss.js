@@ -162,70 +162,19 @@
         y = this.y;
       const flash = this.state === "dying" && Math.floor(this.t * 20) % 2 === 0;
 
-      // 本体
-      ctx.save();
-      ctx.shadowColor = COL.purple;
-      ctx.shadowBlur = 18;
-      ctx.fillStyle = flash ? COL.white : "#2b1550";
-      ctx.strokeStyle = COL.purple;
-      ctx.lineWidth = 2;
-      const w = this.w,
-        h = this.h;
-      ctx.beginPath();
-      ctx.moveTo(x - w / 2, y - h / 2 + 16);
-      ctx.lineTo(x + w / 2 - 20, y - h / 2);
-      ctx.lineTo(x + w / 2, y);
-      ctx.lineTo(x + w / 2 - 20, y + h / 2);
-      ctx.lineTo(x - w / 2, y + h / 2 - 16);
-      ctx.lineTo(x - w / 2 + 18, y);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
+      // 船体（コア開/閉でスプライト切り替え。断末魔は白フラッシュ）
+      const hull = flash
+        ? "bossWhite"
+        : this.coreVulnerable
+          ? "bossOpen"
+          : "bossClosed";
+      G.Sprites.blit(ctx, hull, x, y);
 
-      // 装甲のディテール線
-      ctx.save();
-      ctx.strokeStyle = "rgba(176,107,255,0.5)";
-      ctx.lineWidth = 1;
-      for (let i = -1; i <= 1; i++) {
-        ctx.beginPath();
-        ctx.moveTo(x - w / 2 + 30, y + i * 30);
-        ctx.lineTo(x + w / 2 - 24, y + i * 30);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // コア（弱点）
-      const cr = this.coreRect();
-      ctx.save();
-      if (this.coreVulnerable) {
-        const pulse = 0.6 + 0.4 * Math.sin(this.t * 10);
-        ctx.shadowColor = COL.red;
-        ctx.shadowBlur = 20;
-        ctx.fillStyle = `rgba(255,77,94,${0.6 + pulse * 0.4})`;
-      } else {
-        ctx.shadowColor = COL.cyan;
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = "#0a3a4a"; // 閉じている＝無敵
-      }
-      ctx.beginPath();
-      ctx.arc(cr.x, cr.y, 18, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = COL.white;
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.restore();
-
-      // コアが閉じている時のシャッター表現
-      if (!this.coreVulnerable) {
-        ctx.save();
-        ctx.strokeStyle = COL.cyan;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(cr.x - 16, cr.y);
-        ctx.lineTo(cr.x + 16, cr.y);
-        ctx.stroke();
-        ctx.restore();
+      // コア（開いている時のみ、赤の明滅スプライトを重ねる）
+      if (this.coreVulnerable && !flash) {
+        const cr = this.coreRect();
+        const frame = Math.floor(this.t * 8) % 2;
+        G.Sprites.blit(ctx, frame === 0 ? "core0" : "core1", cr.x, cr.y);
       }
     }
   }

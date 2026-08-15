@@ -12,6 +12,7 @@
     constructor(canvas) {
       this.canvas = canvas;
       this.ctx = canvas.getContext("2d");
+      this.ctx.imageSmoothingEnabled = false; // ドット絵をにじませない
       this.state = "title";
       this.t = 0;
 
@@ -278,7 +279,7 @@
       if (e.dead) return;
       e.dead = true;
       this.score += e.score;
-      G.Particles.burst(e.x, e.y, e.isRed ? COL.red : COL.orange, 16, 220, 3);
+      G.Particles.explode(e.x, e.y, 1);
       G.audio.explode();
       if (e.isRed) this.capsules.push(new G.Capsule(e.x, e.y));
     }
@@ -337,63 +338,54 @@
     }
 
     _drawHud(ctx) {
-      U.text(ctx, "SCORE " + String(this.score).padStart(7, "0"), 16, 26, {
-        size: 18,
+      U.pxText(ctx, "SCORE " + String(this.score).padStart(7, "0"), 15, 9, {
+        size: 8,
         color: COL.cyan,
       });
-      U.text(
+      U.pxText(
         ctx,
         "HI " + String(this.highScore).padStart(7, "0"),
-        C.W - 16,
-        26,
-        { size: 18, color: COL.yellow, align: "right" }
+        C.W - 15,
+        9,
+        { size: 8, color: COL.yellow, align: "right" }
       );
       // 残機（自機アイコン）
       for (let i = 0; i < Math.max(0, this.lives - 1); i++) {
-        const x = 20 + i * 26;
-        const y = 44;
-        U.glow(ctx, COL.cyan, 6, (c) => {
-          c.beginPath();
-          c.moveTo(x + 10, y);
-          c.lineTo(x - 6, y - 5);
-          c.lineTo(x - 6, y + 5);
-          c.closePath();
-          c.fill();
-        });
+        G.Sprites.blit(ctx, "lifeIcon", 36 + i * 40, 48);
       }
     }
 
     _drawBossHp(ctx) {
       const boss = this.boss;
+      const PX = C.PX;
       const w = C.W - 120,
-        x = 60,
-        y = 54,
-        h = 8;
+        x = U.snap(60),
+        y = U.snap(72),
+        h = PX * 3;
       ctx.save();
-      ctx.fillStyle = "rgba(0,0,0,0.5)";
-      ctx.fillRect(x, y, w, h);
+      // 背景と枠（フラット）
+      ctx.fillStyle = "#181c24";
+      ctx.fillRect(x - PX, y - PX, w + PX * 2, h + PX * 2);
       const ratio = Math.max(0, boss.hp / boss.maxHp);
-      ctx.shadowColor = COL.red;
-      ctx.shadowBlur = 8;
       ctx.fillStyle = ratio > 0.4 ? COL.red : COL.orange;
-      ctx.fillRect(x, y, w * ratio, h);
-      ctx.strokeStyle = COL.white;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x, y, w, h);
+      ctx.fillRect(x, y, U.snap(w * ratio), h);
+      ctx.fillStyle = COL.white;
+      ctx.fillRect(x - PX, y - PX, w + PX * 2, PX); // 上枠
+      ctx.fillRect(x - PX, y + h, w + PX * 2, PX); // 下枠
       ctx.restore();
-      U.text(ctx, "BOSS", x, y - 4, { size: 12, color: COL.red });
+      U.pxText(ctx, "BOSS", x, y - PX * 5, { size: 7, color: COL.red });
     }
 
     _drawWarning(ctx) {
       if (Math.floor(this.t * 4) % 2 === 0) {
-        U.text(ctx, "!! WARNING !!", C.W / 2, C.H / 2 - 40, {
-          size: 40,
+        U.pxText(ctx, "!! WARNING !!", C.W / 2, C.H / 2 - 72, {
+          size: 14,
           color: COL.red,
           align: "center",
-          blur: 16,
+          shadow: "#4a0c14",
         });
-        U.text(ctx, "A HUGE BATTLESHIP IS APPROACHING", C.W / 2, C.H / 2, {
-          size: 16,
+        U.pxText(ctx, "A HUGE BATTLESHIP IS APPROACHING", C.W / 2, C.H / 2 - 12, {
+          size: 6,
           color: COL.yellow,
           align: "center",
         });
@@ -405,11 +397,11 @@
       ctx.fillStyle = "rgba(0,0,0,0.45)";
       ctx.fillRect(0, 0, C.W, C.H);
       ctx.restore();
-      U.text(ctx, msg, C.W / 2, C.H / 2, {
-        size: 44,
+      U.pxText(ctx, msg, C.W / 2, C.H / 2 - 24, {
+        size: 15,
         color,
         align: "center",
-        blur: 16,
+        shadow: "#181c24",
       });
     }
 
@@ -418,22 +410,22 @@
       ctx.fillStyle = "rgba(0,0,0,0.55)";
       ctx.fillRect(0, 0, C.W, C.H);
       ctx.restore();
-      U.text(ctx, msg, C.W / 2, C.H / 2 - 30, {
-        size: 46,
+      U.pxText(ctx, msg, C.W / 2, C.H / 2 - 78, {
+        size: 15,
         color,
         align: "center",
-        blur: 18,
+        shadow: "#181c24",
       });
-      U.text(
+      U.pxText(
         ctx,
         "SCORE " + String(this.score).padStart(7, "0"),
         C.W / 2,
-        C.H / 2 + 16,
-        { size: 22, color: COL.cyan, align: "center" }
+        C.H / 2 - 6,
+        { size: 9, color: COL.cyan, align: "center" }
       );
       if (this.overlayTimer <= 0) {
-        U.text(ctx, "PRESS ENTER TO RETURN TO TITLE", C.W / 2, C.H / 2 + 60, {
-          size: 16,
+        U.pxText(ctx, "PRESS ENTER TO RETURN TO TITLE", C.W / 2, C.H / 2 + 48, {
+          size: 6,
           color: COL.white,
           align: "center",
           alpha: 0.6 + 0.4 * Math.sin(this.t * 6),
@@ -442,14 +434,15 @@
     }
 
     _drawTitle(ctx) {
-      U.text(ctx, "NEO GRADIA", C.W / 2, 200, {
-        size: 68,
+      // SFCロゴ風の2色抜きタイトル
+      U.pxText(ctx, "NEO GRADIA", C.W / 2, 150, {
+        size: 22,
         color: COL.cyan,
         align: "center",
-        blur: 24,
+        shadow: "#1c3878",
       });
-      U.text(ctx, "- ネオレトロ シューティング -", C.W / 2, 240, {
-        size: 18,
+      U.pxText(ctx, "- 16BIT SHOOTING -", C.W / 2, 232, {
+        size: 8,
         color: COL.mag,
         align: "center",
       });
@@ -462,27 +455,26 @@
         "ポーズ : P",
       ];
       lines.forEach((l, i) => {
-        U.text(ctx, l, C.W / 2, 320 + i * 30, {
-          size: 16,
+        U.pxText(ctx, l, C.W / 2, 306 + i * 30, {
+          size: 6,
           color: "#9fd8ee",
           align: "center",
-          blur: 4,
         });
       });
 
-      U.text(ctx, "PRESS ENTER TO START", C.W / 2, 500, {
-        size: 24,
+      U.pxText(ctx, "PRESS ENTER TO START", C.W / 2, 486, {
+        size: 10,
         color: COL.yellow,
         align: "center",
         alpha: 0.5 + 0.5 * Math.sin(this.t * 5),
       });
       if (this.highScore > 0) {
-        U.text(
+        U.pxText(
           ctx,
           "HI-SCORE  " + String(this.highScore).padStart(7, "0"),
           C.W / 2,
-          540,
-          { size: 16, color: COL.green, align: "center" }
+          534,
+          { size: 7, color: COL.green, align: "center" }
         );
       }
     }

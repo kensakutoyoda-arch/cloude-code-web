@@ -25,23 +25,8 @@
       if (this.x < -30) this.dead = true;
     }
     draw(ctx) {
-      const pulse = 0.6 + 0.4 * Math.sin(this.phase);
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.shadowColor = COL.red;
-      ctx.shadowBlur = 12 + pulse * 8;
-      ctx.fillStyle = `rgba(255,77,94,${0.4 + pulse * 0.4})`;
-      ctx.fillRect(-10, -10, 20, 20);
-      ctx.strokeStyle = COL.white;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(-10, -10, 20, 20);
-      U.text(ctx, "P", 0, 6, {
-        size: 15,
-        color: COL.white,
-        align: "center",
-        blur: 4,
-      });
-      ctx.restore();
+      const frame = Math.floor(this.phase * 1.5) % 2;
+      G.Sprites.blit(ctx, frame === 0 ? "capsule0" : "capsule1", this.x, this.y);
     }
   }
 
@@ -149,63 +134,19 @@
     }
 
     draw(ctx) {
-      const x = this.x,
-        y = this.y;
-      const col = this.isRed ? COL.red : this._typeColor();
-      switch (this.type) {
-        case "turret":
-          U.glow(ctx, col, 12, (c) => {
-            c.beginPath();
-            c.moveTo(x - 20, y - 12);
-            c.lineTo(x + 16, y - 16);
-            c.lineTo(x + 20, y);
-            c.lineTo(x + 16, y + 16);
-            c.lineTo(x - 20, y + 12);
-            c.closePath();
-            c.fill();
-          });
-          ctx.save();
-          ctx.fillStyle = COL.white;
-          ctx.fillRect(x - 4, y - 4, 8, 8);
-          ctx.restore();
-          break;
-        case "tracker":
-          U.glowCircle(ctx, x, y, 11, col, 12);
-          ctx.save();
-          ctx.fillStyle = "#03040a";
-          ctx.beginPath();
-          ctx.arc(x, y, 4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-          break;
-        default: // straight / sine — 逆三角の小型機
-          U.glow(ctx, col, 12, (c) => {
-            c.beginPath();
-            c.moveTo(x - 13, y);
-            c.lineTo(x + 12, y - 10);
-            c.lineTo(x + 12, y + 10);
-            c.closePath();
-            c.fill();
-          });
-          ctx.save();
-          ctx.fillStyle = COL.white;
-          ctx.beginPath();
-          ctx.arc(x + 4, y, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-      }
+      G.Sprites.blit(ctx, this._spriteName(), this.x, this.y);
     }
 
-    _typeColor() {
+    _spriteName() {
       switch (this.type) {
         case "turret":
-          return COL.purple;
+          return this.isRed ? "turretRed" : "turret";
         case "tracker":
-          return COL.green;
+          return this.isRed ? "trackerRed" : "tracker";
         case "sine":
-          return COL.mag;
+          return this.isRed ? "zakoRed" : "zakoMag";
         default:
-          return COL.cyan;
+          return this.isRed ? "zakoRed" : "zakoCyan";
       }
     }
   }

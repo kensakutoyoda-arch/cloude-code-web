@@ -27,9 +27,7 @@
       if (this.x > G.C.W + 30) this.dead = true;
     }
     draw(ctx) {
-      U.glow(ctx, this.color, 10, (c) => {
-        c.fillRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
-      });
+      G.Sprites.blit(ctx, "pellet", this.x, this.y);
     }
   }
 
@@ -53,7 +51,7 @@
       if (this.x > G.C.W + 30 || this.y < -30) this.dead = true;
     }
     draw(ctx) {
-      U.glowCircle(ctx, this.x, this.y, 5, this.color, 10);
+      G.Sprites.blit(ctx, "double", this.x, this.y);
     }
   }
 
@@ -78,21 +76,7 @@
       if (this.x - this.w / 2 > G.C.W + 30) this.dead = true;
     }
     draw(ctx) {
-      ctx.save();
-      ctx.shadowColor = COL.cyan;
-      ctx.shadowBlur = 16;
-      const grad = ctx.createLinearGradient(
-        this.x - this.w / 2,
-        0,
-        this.x + this.w / 2,
-        0
-      );
-      grad.addColorStop(0, "rgba(56,246,255,0.1)");
-      grad.addColorStop(0.5, COL.white);
-      grad.addColorStop(1, "rgba(56,246,255,0.1)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
-      ctx.restore();
+      G.Sprites.blit(ctx, "laser", this.x, this.y);
     }
   }
 
@@ -129,14 +113,7 @@
       if (this.x > G.C.W + 30) this.dead = true;
     }
     draw(ctx) {
-      U.glow(ctx, this.color, 10, (c) => {
-        c.beginPath();
-        c.moveTo(this.x + 8, this.y);
-        c.lineTo(this.x - 6, this.y - 4);
-        c.lineTo(this.x - 6, this.y + 4);
-        c.closePath();
-        c.fill();
-      });
+      G.Sprites.blit(ctx, "missile", this.x, this.y);
     }
   }
 
@@ -165,7 +142,7 @@
         this.dead = true;
     }
     draw(ctx) {
-      U.glowCircle(ctx, this.x, this.y, this.r, this.color, 10);
+      G.Sprites.blit(ctx, this.color === COL.yellow ? "ebulletY" : "ebullet", this.x, this.y);
     }
   }
 

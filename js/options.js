@@ -44,20 +44,9 @@
       }
     }
     draw(ctx) {
+      const frame = Math.floor(this.phase * 2) % 2;
       for (const u of this.units) {
-        const r = 8 + Math.sin(this.phase) * 1.2;
-        U.glow(ctx, COL.orange, 12, (c) => {
-          c.beginPath();
-          c.arc(u.x, u.y, r, 0, Math.PI * 2);
-          c.fill();
-        });
-        // 中心の芯
-        ctx.save();
-        ctx.fillStyle = COL.yellow;
-        ctx.beginPath();
-        ctx.arc(u.x, u.y, r * 0.45, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        G.Sprites.blit(ctx, frame === 0 ? "option0" : "option1", u.x, u.y);
       }
     }
   }

@@ -28,6 +28,7 @@
       this.alive = true;
       this.invuln = 2.0; // 復帰直後の無敵
       this.fireCd = 0;
+      this.animT = 0; // 描画アニメ用クロック（ロジックには不使用）
       this.trail = [];
 
       // パワーアップ状態はミス時に喪失する
@@ -56,6 +57,7 @@
 
     update(dt, game) {
       const inp = G.input;
+      this.animT += dt;
       if (this.invuln > 0) this.invuln -= dt;
 
       // 移動
@@ -119,53 +121,18 @@
 
       const x = this.x,
         y = this.y;
+      const frame = Math.floor(this.animT * 14) % 2;
 
-      // シールド
+      // シールド（前方アーク・2フレーム明滅）
       if (this.shieldHp > 0) {
-        ctx.save();
-        ctx.globalAlpha = 0.5;
-        ctx.strokeStyle = COL.cyan;
-        ctx.shadowColor = COL.cyan;
-        ctx.shadowBlur = 14;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(x, y, 26, -Math.PI / 2.2, Math.PI / 2.2);
-        ctx.stroke();
-        ctx.restore();
+        G.Sprites.blit(ctx, frame === 0 ? "shield0" : "shield1", x + 32, y);
       }
 
-      // 機体（ネオンの多角形）
-      U.glow(ctx, COL.cyan, 12, (c) => {
-        c.beginPath();
-        c.moveTo(x + 20, y); // 機首
-        c.lineTo(x - 6, y - 9);
-        c.lineTo(x - 14, y - 5);
-        c.lineTo(x - 10, y);
-        c.lineTo(x - 14, y + 5);
-        c.lineTo(x - 6, y + 9);
-        c.closePath();
-        c.fill();
-      });
-      // コックピット
-      ctx.save();
-      ctx.fillStyle = COL.white;
-      ctx.beginPath();
-      ctx.arc(x + 2, y, 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-      // エンジン炎
-      ctx.save();
-      ctx.fillStyle = COL.orange;
-      ctx.shadowColor = COL.orange;
-      ctx.shadowBlur = 10;
-      const f = 6 + Math.random() * 6;
-      ctx.beginPath();
-      ctx.moveTo(x - 14, y - 3);
-      ctx.lineTo(x - 14 - f, y);
-      ctx.lineTo(x - 14, y + 3);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
+      // エンジン炎（機体の後方、2フレーム）
+      G.Sprites.blit(ctx, frame === 0 ? "flame0" : "flame1", x - 40, y);
+
+      // 機体スプライト
+      G.Sprites.blit(ctx, "ship", x, y);
     }
   }
 

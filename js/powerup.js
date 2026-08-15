@@ -59,42 +59,37 @@
     update(dt) {
       if (this.flash > 0) this.flash -= dt;
     }
-    // 画面下部にバーを描画
+    // 画面下部にバーを描画（SFC風フラットUI）
     draw(ctx, player) {
+      const PX = C.PX;
       const n = this.slots.length;
       const cellW = 108;
       const gap = 6;
       const totalW = n * cellW + (n - 1) * gap;
-      const x0 = (C.W - totalW) / 2;
-      const y = C.H - 40;
-      const h = 26;
+      const x0 = U.snap((C.W - totalW) / 2);
+      const y = U.snap(C.H - 40);
+      const h = 27;
 
       for (let i = 0; i < n; i++) {
-        const x = x0 + i * (cellW + gap);
+        const x = U.snap(x0 + i * (cellW + gap));
         const active = i === this.cursor;
 
         ctx.save();
-        // セル枠
-        ctx.strokeStyle = active ? COL.yellow : "rgba(90,150,200,0.5)";
-        ctx.lineWidth = active ? 2 : 1;
-        if (active) {
-          ctx.shadowColor = COL.yellow;
-          ctx.shadowBlur = 14;
-          ctx.fillStyle = "rgba(255,225,77,0.18)";
-          ctx.fillRect(x, y, cellW, h);
-        } else {
-          ctx.fillStyle = "rgba(10,25,50,0.55)";
-          ctx.fillRect(x, y, cellW, h);
-        }
-        ctx.strokeRect(x, y, cellW, h);
+        // セル（ベタ塗り＋ドット枠）
+        ctx.fillStyle = active ? COL.yellow : COL.uiBlue;
+        ctx.fillRect(x, y, cellW, h);
+        ctx.fillStyle = active ? COL.white : COL.uiBorder;
+        ctx.fillRect(x, y, cellW, PX); // 上
+        ctx.fillRect(x, y + h - PX, cellW, PX); // 下
+        ctx.fillRect(x, y, PX, h); // 左
+        ctx.fillRect(x + cellW - PX, y, PX, h); // 右
         ctx.restore();
 
-        // ラベル
-        U.text(ctx, this.slots[i], x + cellW / 2, y + 18, {
-          size: 13,
-          color: active ? COL.yellow : "#7fb6d6",
+        // ラベル（ドット文字。選択中は黒文字）
+        U.pxText(ctx, this.slots[i], x + cellW / 2, y + 4, {
+          size: 7,
+          color: active ? "#181c24" : "#8fb8d8",
           align: "center",
-          blur: active ? 8 : 0,
         });
 
         // 取得状況インジケータ（点灯 = 所持/レベル）
@@ -102,10 +97,8 @@
         if (lit > 0) {
           ctx.save();
           ctx.fillStyle = COL.green;
-          ctx.shadowColor = COL.green;
-          ctx.shadowBlur = 6;
           for (let k = 0; k < lit; k++) {
-            ctx.fillRect(x + 6 + k * 8, y + h - 5, 5, 3);
+            ctx.fillRect(x + PX * 2 + k * PX * 3, y + h - PX * 2, PX * 2, PX);
           }
           ctx.restore();
         }
