@@ -27,6 +27,7 @@ html, body {
   position: relative;
   width: min(92vw, 800px);
   aspect-ratio: 4 / 3;
+  touch-action: none; /* スクロール/ダブルタップズームを抑止（タッチ操作用） */
   border: 2px solid rgba(56, 246, 255, 0.5);
   border-radius: 6px;
   box-shadow:
@@ -67,4 +68,90 @@ html, body {
   color: #6fb8d6;
   text-align: center;
   text-shadow: 0 0 6px rgba(56, 246, 255, 0.25);
+}
+
+/* ---- タッチ操作UI（タッチデバイスでのみ JS が body.touch を付与） ---- */
+#touch-ui {
+  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* スティック領域のタッチは stage 側で処理 */
+  z-index: 10;
+}
+body.touch #touch-ui {
+  display: block;
+}
+
+#stick-base,
+#stick-knob {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.1s;
+  will-change: transform;
+}
+#stick-base {
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  border: 2px solid rgba(120, 216, 248, 0.45);
+  background: rgba(20, 40, 70, 0.25);
+}
+#stick-knob {
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  background: rgba(120, 216, 248, 0.45);
+  border: 2px solid rgba(248, 248, 248, 0.6);
+}
+#stick-base.on,
+#stick-knob.on {
+  opacity: 1;
+}
+
+#btn-power,
+#btn-pause {
+  position: absolute;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: bold;
+  color: #cfe9ff;
+  background: rgba(18, 36, 74, 0.55);
+  border: 2px solid rgba(120, 216, 248, 0.5);
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#btn-power {
+  right: 3%;
+  bottom: 16%;
+  width: 84px;
+  height: 84px;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+}
+#btn-pause {
+  right: 3%;
+  top: 3%;
+  width: 44px;
+  height: 36px;
+  font-size: 14px;
+}
+#btn-power.active,
+#btn-pause.active {
+  background: rgba(248, 216, 56, 0.5);
+  color: #10141c;
+  border-color: rgba(248, 248, 248, 0.8);
+}
+
+/* スマホでは画面幅いっぱいに */
+@media (pointer: coarse) {
+  #stage-wrap {
+    width: min(98vw, 800px);
+  }
 }

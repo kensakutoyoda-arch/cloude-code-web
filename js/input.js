@@ -21,6 +21,10 @@
   const justPressed = new Set(); // このフレームで押し始めた code
   const consumedEdge = new Set(); // pressed() 判定で消費済みの code
 
+  // タッチUI等からの仮想入力（アクション名単位で管理）
+  const virtHeld = new Set();
+  const virtPressed = new Set();
+
   function codeIsAction(code, action) {
     return MAP[action] && MAP[action].indexOf(code) !== -1;
   }
@@ -56,12 +60,17 @@
   G.input = {
     // 押下中か
     down(action) {
+      if (virtHeld.has(action)) return true;
       const codes = MAP[action] || [];
       for (const c of codes) if (held.has(c)) return true;
       return false;
     },
     // このフレームで押し始めたか（1回だけ true を返す＝エッジ検出）
     pressed(action) {
+      if (virtPressed.has(action)) {
+        virtPressed.delete(action);
+        return true;
+      }
       const codes = MAP[action] || [];
       for (const c of codes) {
         if (justPressed.has(c) && !consumedEdge.has(c)) {
@@ -71,9 +80,19 @@
       }
       return false;
     },
+    // 仮想入力（タッチUI用）: 押しっぱなし状態の設定/解除
+    virtualDown(action, on) {
+      if (on) virtHeld.add(action);
+      else virtHeld.delete(action);
+    },
+    // 仮想入力（タッチUI用）: 1回ぶんの押下エッジ
+    virtualPress(action) {
+      virtPressed.add(action);
+    },
     // フレーム終端で呼ぶ：エッジ状態をクリア
     endFrame() {
       justPressed.clear();
+      virtPressed.clear();
     },
   };
 })();

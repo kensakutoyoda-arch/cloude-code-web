@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>NEO GRADIA - 16BIT シューティング</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%2301030a'/><path d='M2 8 L10 5 L14 8 L10 11 Z' fill='%2340d8f0'/></svg>">
   <link rel="stylesheet" href="style.css">
@@ -11,16 +11,24 @@
   <div id="stage-wrap">
     <canvas id="game" width="800" height="600"></canvas>
     <div id="crt-overlay"></div>
+    <div id="touch-ui">
+      <div id="stick-base"></div>
+      <div id="stick-knob"></div>
+      <div id="btn-pause">II</div>
+      <div id="btn-power">POWER</div>
+    </div>
   </div>
 
   <p id="hint">
-    移動: 方向キー / WASD ・ ショット: Z / Space ・ パワーアップ: X / Enter ・ ポーズ: P ・ スタート: Enter
+    移動: 方向キー / WASD ・ ショット: Z / Space ・ パワーアップ: X / Enter ・ ポーズ: P ・ スタート: Enter<br>
+    スマホ: 画面タップでスタート ・ 左半分ドラッグで移動（自動連射） ・ POWERボタンで強化
   </p>
 
   <!-- 読み込み順が重要（依存の浅い順） -->
   <script src="js/core.js"></script>
   <script src="js/sprites.js"></script>
   <script src="js/input.js"></script>
+  <script src="js/touch.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/starfield.js"></script>
   <script src="js/particles.js"></script>
