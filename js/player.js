@@ -125,11 +125,11 @@
 
       // シールド（前方アーク・2フレーム明滅）
       if (this.shieldHp > 0) {
-        G.Sprites.blit(ctx, frame === 0 ? "shield0" : "shield1", x + 32, y);
+        G.Sprites.blit(ctx, frame === 0 ? "shield0" : "shield1", x + 46, y);
       }
 
       // エンジン炎（機体の後方、2フレーム）
-      G.Sprites.blit(ctx, frame === 0 ? "flame0" : "flame1", x - 40, y);
+      G.Sprites.blit(ctx, frame === 0 ? "flame0" : "flame1", x - 44, y);
 
       // 機体スプライト
       G.Sprites.blit(ctx, "ship", x, y);

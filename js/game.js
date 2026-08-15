@@ -339,7 +339,7 @@
 
     _drawHud(ctx) {
       U.pxText(ctx, "SCORE " + String(this.score).padStart(7, "0"), 15, 9, {
-        size: 8,
+        size: 12,
         color: COL.cyan,
       });
       U.pxText(
@@ -347,7 +347,7 @@
         "HI " + String(this.highScore).padStart(7, "0"),
         C.W - 15,
         9,
-        { size: 8, color: COL.yellow, align: "right" }
+        { size: 12, color: COL.yellow, align: "right" }
       );
       // 残機（自機アイコン）
       for (let i = 0; i < Math.max(0, this.lives - 1); i++) {
@@ -373,19 +373,19 @@
       ctx.fillRect(x - PX, y - PX, w + PX * 2, PX); // 上枠
       ctx.fillRect(x - PX, y + h, w + PX * 2, PX); // 下枠
       ctx.restore();
-      U.pxText(ctx, "BOSS", x, y - PX * 5, { size: 7, color: COL.red });
+      U.pxText(ctx, "BOSS", x, y - PX * 5, { size: 10, color: COL.red });
     }
 
     _drawWarning(ctx) {
       if (Math.floor(this.t * 4) % 2 === 0) {
         U.pxText(ctx, "!! WARNING !!", C.W / 2, C.H / 2 - 72, {
-          size: 14,
+          size: 20,
           color: COL.red,
           align: "center",
           shadow: "#4a0c14",
         });
         U.pxText(ctx, "A HUGE BATTLESHIP IS APPROACHING", C.W / 2, C.H / 2 - 12, {
-          size: 6,
+          size: 9,
           color: COL.yellow,
           align: "center",
         });
@@ -398,7 +398,7 @@
       ctx.fillRect(0, 0, C.W, C.H);
       ctx.restore();
       U.pxText(ctx, msg, C.W / 2, C.H / 2 - 24, {
-        size: 15,
+        size: 22,
         color,
         align: "center",
         shadow: "#181c24",
@@ -411,7 +411,7 @@
       ctx.fillRect(0, 0, C.W, C.H);
       ctx.restore();
       U.pxText(ctx, msg, C.W / 2, C.H / 2 - 78, {
-        size: 15,
+        size: 22,
         color,
         align: "center",
         shadow: "#181c24",
@@ -421,11 +421,11 @@
         "SCORE " + String(this.score).padStart(7, "0"),
         C.W / 2,
         C.H / 2 - 6,
-        { size: 9, color: COL.cyan, align: "center" }
+        { size: 13, color: COL.cyan, align: "center" }
       );
       if (this.overlayTimer <= 0) {
         U.pxText(ctx, "PRESS ENTER TO RETURN TO TITLE", C.W / 2, C.H / 2 + 48, {
-          size: 6,
+          size: 9,
           color: COL.white,
           align: "center",
           alpha: 0.6 + 0.4 * Math.sin(this.t * 6),
@@ -436,13 +436,13 @@
     _drawTitle(ctx) {
       // SFCロゴ風の2色抜きタイトル
       U.pxText(ctx, "NEO GRADIA", C.W / 2, 150, {
-        size: 22,
+        size: 32,
         color: COL.cyan,
         align: "center",
         shadow: "#1c3878",
       });
       U.pxText(ctx, "- 16BIT SHOOTING -", C.W / 2, 232, {
-        size: 8,
+        size: 12,
         color: COL.mag,
         align: "center",
       });
@@ -456,14 +456,14 @@
       ];
       lines.forEach((l, i) => {
         U.pxText(ctx, l, C.W / 2, 306 + i * 30, {
-          size: 6,
+          size: 9,
           color: "#9fd8ee",
           align: "center",
         });
       });
 
       U.pxText(ctx, "PRESS ENTER TO START", C.W / 2, 486, {
-        size: 10,
+        size: 15,
         color: COL.yellow,
         align: "center",
         alpha: 0.5 + 0.5 * Math.sin(this.t * 5),
@@ -474,7 +474,7 @@
           "HI-SCORE  " + String(this.highScore).padStart(7, "0"),
           C.W / 2,
           534,
-          { size: 7, color: COL.green, align: "center" }
+          { size: 10, color: COL.green, align: "center" }
         );
       }
     }

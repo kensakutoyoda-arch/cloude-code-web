@@ -86,8 +86,8 @@
         ctx.restore();
 
         // ラベル（ドット文字。選択中は黒文字）
-        U.pxText(ctx, this.slots[i], x + cellW / 2, y + 4, {
-          size: 7,
+        U.pxText(ctx, this.slots[i], x + cellW / 2, y + 6, {
+          size: 9,
           color: active ? "#181c24" : "#8fb8d8",
           align: "center",
         });
