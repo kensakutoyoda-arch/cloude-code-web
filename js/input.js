@@ -85,6 +85,15 @@
       if (on) virtHeld.add(action);
       else virtHeld.delete(action);
     },
+    // アナログ移動入力（タッチスティック用）。-1..1 の正規化ベクトル、null で解除。
+    analog: null,
+    setAnalog(ax, ay) {
+      if (ax == null) {
+        this.analog = null;
+      } else {
+        this.analog = { x: ax, y: ay };
+      }
+    },
     // 仮想入力（タッチUI用）: 1回ぶんの押下エッジ
     virtualPress(action) {
       virtPressed.add(action);

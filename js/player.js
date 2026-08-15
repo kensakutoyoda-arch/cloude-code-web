@@ -60,17 +60,23 @@
       this.animT += dt;
       if (this.invuln > 0) this.invuln -= dt;
 
-      // 移動
+      // 移動（アナログ入力＝タッチスティック優先、無ければキーボードの8方向）
       let dx = 0,
         dy = 0;
-      if (inp.down("left")) dx -= 1;
-      if (inp.down("right")) dx += 1;
-      if (inp.down("up")) dy -= 1;
-      if (inp.down("down")) dy += 1;
-      if (dx !== 0 && dy !== 0) {
-        const inv = 1 / Math.SQRT2;
-        dx *= inv;
-        dy *= inv;
+      if (inp.analog) {
+        // 大きさは1にクランプ済みの正規化ベクトル。速度上限は speed のまま。
+        dx = inp.analog.x;
+        dy = inp.analog.y;
+      } else {
+        if (inp.down("left")) dx -= 1;
+        if (inp.down("right")) dx += 1;
+        if (inp.down("up")) dy -= 1;
+        if (inp.down("down")) dy += 1;
+        if (dx !== 0 && dy !== 0) {
+          const inv = 1 / Math.SQRT2;
+          dx *= inv;
+          dy *= inv;
+        }
       }
       this.x += dx * this.speed * dt;
       this.y += dy * this.speed * dt;

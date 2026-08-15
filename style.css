@@ -25,7 +25,10 @@ html, body {
 
 #stage-wrap {
   position: relative;
-  width: min(92vw, 800px);
+  /* 幅・高さの両方に収まるサイズで 4:3 を維持（flex-shrink による潰れを防止） */
+  width: min(92vw, calc((100vh - 70px) * 4 / 3), 800px);
+  width: min(92vw, calc((100dvh - 70px) * 4 / 3), 800px);
+  flex-shrink: 0;
   aspect-ratio: 4 / 3;
   touch-action: none; /* スクロール/ダブルタップズームを抑止（タッチ操作用） */
   border: 2px solid rgba(56, 246, 255, 0.5);
@@ -149,9 +152,16 @@ body.touch #touch-ui {
   border-color: rgba(248, 248, 248, 0.8);
 }
 
-/* スマホでは画面幅いっぱいに */
+/* スマホでは画面を最大活用（ヒント文は非表示・横向きは高さ基準でフィット） */
 @media (pointer: coarse) {
+  body {
+    gap: 4px;
+  }
+  #hint {
+    display: none;
+  }
   #stage-wrap {
-    width: min(98vw, 800px);
+    width: min(100vw, calc(100vh * 4 / 3 - 8px), 800px);
+    width: min(100vw, calc(100dvh * 4 / 3 - 8px), 800px);
   }
 }

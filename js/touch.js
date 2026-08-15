@@ -13,8 +13,9 @@
     (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
   if (!isTouch) return;
 
-  const DEAD = 12; // スティックのデッドゾーン（px）
-  const KNOB_MAX = 40; // ノブの視覚上の最大移動半径（px）
+  const DEAD = 6; // スティックのデッドゾーン（px）
+  const RANGE = 40; // フル入力になる半径（px）＝ノブの最大移動半径
+  const FOLLOW = 40; // これを超えて引くと原点が指を追いかける（追従式）
 
   window.addEventListener("load", () => {
     const wrap = document.getElementById("stage-wrap");
@@ -31,13 +32,18 @@
     let originX = 0,
       originY = 0;
 
-    const setDirs = (dx, dy) => {
-      G.input.virtualDown("left", dx < -DEAD);
-      G.input.virtualDown("right", dx > DEAD);
-      G.input.virtualDown("up", dy < -DEAD);
-      G.input.virtualDown("down", dy > DEAD);
+    // 指の変位 → アナログベクトル（デッドゾーン付き・大きさ1でクランプ）
+    const applyStick = (dx, dy) => {
+      const d = Math.hypot(dx, dy);
+      if (d < DEAD) {
+        G.input.setAnalog(0, 0);
+        return;
+      }
+      // デッドゾーンを除いた距離を RANGE で正規化
+      const m = Math.min(1, (d - DEAD) / (RANGE - DEAD));
+      G.input.setAnalog((dx / d) * m, (dy / d) * m);
     };
-    const clearDirs = () => setDirs(0, 0);
+    const clearStick = () => G.input.setAnalog(null);
 
     const showStick = (x, y) => {
       base.style.transform = `translate(${x}px, ${y}px)`;
@@ -73,7 +79,7 @@
             originX = p.x;
             originY = p.y;
             showStick(p.x, p.y);
-            clearDirs();
+            G.input.setAnalog(0, 0);
           }
         }
       },
@@ -87,12 +93,23 @@
         for (const t of e.changedTouches) {
           if (t.identifier !== stickId) continue;
           const p = localPos(t);
-          const dx = p.x - originX;
-          const dy = p.y - originY;
-          setDirs(dx, dy);
+          let dx = p.x - originX;
+          let dy = p.y - originY;
+          // 追従式: 指が FOLLOW を超えて離れたら原点を指方向へ引きずる。
+          // これにより方向転換が最小の指移動で即反映される。
+          const d = Math.hypot(dx, dy);
+          if (d > FOLLOW) {
+            const pull = (d - FOLLOW) / d;
+            originX += dx * pull;
+            originY += dy * pull;
+            dx = p.x - originX;
+            dy = p.y - originY;
+            base.style.transform = `translate(${originX}px, ${originY}px)`;
+          }
+          applyStick(dx, dy);
           // ノブの視覚位置（最大半径でクランプ）
-          const d = Math.hypot(dx, dy) || 1;
-          const k = Math.min(d, KNOB_MAX) / d;
+          const d2 = Math.hypot(dx, dy) || 1;
+          const k = Math.min(d2, RANGE) / d2;
           moveKnob(originX + dx * k, originY + dy * k);
         }
       },
@@ -104,7 +121,7 @@
       for (const t of e.changedTouches) {
         if (t.identifier === stickId) {
           stickId = null;
-          clearDirs();
+          clearStick();
           hideStick();
         }
       }
